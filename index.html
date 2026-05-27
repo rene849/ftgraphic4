@@ -173,5 +173,37 @@
 <!-- End ai2html - 2026-05-18 10:13 -->
 
     <script src="https://cdn.economistdatateam.com/ai2html/ai2html-resizer-v7-econ.js"></script>
+
+	  <script>
+(function() {
+  var lastHeight = 0;
+  var stableCount = 0;
+
+  function sendHeight() {
+    var currentHeight = document.body.scrollHeight;
+    if (currentHeight === lastHeight) {
+      stableCount++;
+      if (stableCount >= 3) return;
+    } else {
+      stableCount = 0;
+      lastHeight = currentHeight;
+    }
+    window.parent.postMessage({
+      type: 'iframe-height',
+      height: currentHeight
+    }, '*');
+  }
+
+  setTimeout(function() {
+    sendHeight();
+    var retryCount = 0;
+    var retryInterval = setInterval(function() {
+      sendHeight();
+      retryCount++;
+      if (retryCount >= 10) clearInterval(retryInterval);
+    }, 300);
+  }, 500);
+})();
+</script>
   </body>
 </html>
